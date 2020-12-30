@@ -22,4 +22,8 @@ public class UserListResponse {
     public void setUsers(List<UserResponse> users) {
         this.users = users;
     }
+
+    public void add(UserResponse u) {
+        users.add(u);
+    }
 }

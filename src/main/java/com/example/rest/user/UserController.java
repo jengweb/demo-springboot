@@ -3,16 +3,24 @@ package com.example.rest.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @PostMapping("/user")
+    public UserResponse createNewUser(@RequestBody NewUserRequest newUserRequest) {
+        UserModel newUser = userService.create(
+                new UserModel(newUserRequest.getName(),
+                        newUserRequest.getAge()));
+        return new UserResponse(
+                newUser.getId(), newUser.getName(), newUser.getAge());
+    }
 
     @GetMapping("/user/{id}")
     public UserResponse getUser(@PathVariable int id) {
@@ -41,9 +49,15 @@ public class UserController {
     @GetMapping("/user")
     public UserListResponse getAllUser(
             @RequestParam(defaultValue = "1") int page) {
-        return new UserListResponse(
-                new UserResponse(1, "demo 1", 30),
-                new UserResponse(2, "demo 2", 35)
-        );
+        List<UserModel> userModels = userService.getAll();
+        UserListResponse userListResponse = new UserListResponse();
+        userModels.forEach(u -> userListResponse.add(
+                new UserResponse(u.getId(), u.getName(), u.getAge())));
+
+//        userModels.stream()
+//                .filter(user -> user.getId() % 2 == 0)
+//                .distinct()
+//                .sorted();
+        return userListResponse;
     }
 }
