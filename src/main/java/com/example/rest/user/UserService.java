@@ -5,11 +5,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
     public UserModel inquiryUserById(int id) {
-        User foundUser = userRepository.getOne(id);
-        return new UserModel(id, foundUser.getName(), foundUser.getAge());
+        try {
+            User foundUser = userRepository.getOne(id);
+            return new UserModel(id,
+                    foundUser.getName(), foundUser.getAge());
+        }catch (Exception e) {
+            throw new UserNotFoundException(id);
+        }
     }
 }
