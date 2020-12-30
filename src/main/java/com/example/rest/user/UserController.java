@@ -23,7 +23,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/user") //user?page=1
+    @GetMapping("/user")
     public UserListResponse getAllUser(
             @RequestParam(defaultValue = "1") int page) {
         return new UserListResponse(
@@ -31,6 +31,4 @@ public class UserController {
                 new UserResponse(2, "demo 2", 35)
         );
     }
-
-
 }
